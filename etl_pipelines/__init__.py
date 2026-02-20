@@ -1,1 +1,1 @@
-SOURCES = ["source_1", "source_2", "source_3"]
+SOURCES = ["fake_triton", "fake_omny", "fake_localytics"]

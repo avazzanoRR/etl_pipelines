@@ -1,4 +1,4 @@
-download_id: download_a
+download_id: stream_week
 runner:
   module: etl_pipelines.source_1.connector.download_runner
   class: Source1DownloadRunner
