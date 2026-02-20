@@ -1,4 +1,1 @@
 download_id: podcast_week
-runner:
-  module: etl_pipelines.source_1.connector.download_runner
-  class: Source1DownloadRunner
