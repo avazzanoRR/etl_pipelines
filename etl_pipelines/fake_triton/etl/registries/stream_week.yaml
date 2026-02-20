@@ -1,2 +1,0 @@
-pipline_id: pipeline_a
-schedule: "0 6 ** 2"  # Every Tuesday at 6am
