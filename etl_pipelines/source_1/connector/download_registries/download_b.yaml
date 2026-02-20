@@ -1,0 +1,4 @@
+download_id: download_b
+runner:
+  module: etl_pipelines.source_1.connector.download_runner
+  class: Source1DownloadRunner
