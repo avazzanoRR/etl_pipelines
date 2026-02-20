@@ -1,0 +1,5 @@
+pipeline_id: pipeline_a
+schedule: "0 6 ** 2"  # Every Tuesday at 6am
+runner:
+  module: etl_pipelines.source_1.connector.download_runner
+  class: Source1DownloadRunner
