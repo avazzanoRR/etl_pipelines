@@ -2,7 +2,7 @@ import logging
 from typing import Any
 
 
-class Source1DownloadRunner:
+class FakeTritonDownloadRunner:
     """
     Download runner for Source 1.
     In production this would contain real HTTP/API logic specific to this source.
