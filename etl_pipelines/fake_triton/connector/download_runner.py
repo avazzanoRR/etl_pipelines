@@ -1,23 +1,36 @@
 import logging
 from typing import Any
+from pathlib import Path
+
+from etl_pipelines.fake_triton.connector.get_download_registry import get_download_registry_path
+from rr_data_tools.io_ops import inject_placeholders
+from rr_data_tools.io_ops import load_config
 
 
 class FakeTritonDownloadRunner:
     """
-    Download runner for Source 1.
+    Download runner for Triton.
     In production this would contain real HTTP/API logic specific to this source.
     """
 
     def __init__(self, download_params: dict[str, Any], verbose: bool=False):
         self.download_params = download_params
         self.verbose = verbose
-        self.name = download_params.get("name", "source_1")
+        self.name = download_params.get("name", "")
 
     def run(self):
-        logging.info(f"[Source1DownloadRunner] Starting download: '{self.name}'")
+        logging.info(f"Starting download: '{self.name}'")
 
         if self.verbose:
-            logging.info(f"[Source1DownloadRunner] Download parameters: {self.download_params}")
+            logging.info(f"Download parameters: {self.download_params}")
 
         filters = self.download_params.get("filters", {})
-        logging.info(f"[Source1DownloadRunner] Finished downloading '{self.name}'")
+
+        # Inject placeholders into download registry YAML
+        registry_path = get_download_registry_path(self.name)
+        registry = load_config(Path(registry_path))
+        registry = inject_placeholders(registry, **self.download_params.get('filters', {}))
+
+        logging.info(f"Download registry after injecting placeholders: {registry}")
+
+        logging.info(f"Finished downloading '{self.name}'")
