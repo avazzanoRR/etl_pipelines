@@ -1,3 +1,10 @@
-download_id: clips
+name: clips
+resource: /omny/clips
+fields:
+  - date
+  - clip_title
+  - clip_plays
+  - clip_duration_seconds
+  - unique_listeners
 start_date: "{start_date}"
 end_date: "{end_date}"

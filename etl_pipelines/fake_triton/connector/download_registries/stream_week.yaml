@@ -1,4 +1,15 @@
-download_id: stream_week
+name: stream_week
+resource: /triton/stream_week
+fields:
+  - date
+  - daypart
+  - station
+  - stream_count
+  - total_listening_hours
+  - aqh
+  - cume
+  - unique_listeners
+  - avg_session_duration_seconds
 start_date: "{start_date}"
 end_date: "{end_date}"
 daypart: "{daypart}"

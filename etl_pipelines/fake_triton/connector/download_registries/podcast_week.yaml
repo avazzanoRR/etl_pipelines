@@ -1,3 +1,11 @@
-download_id: podcast_week
+name: podcast_week
+resource: /triton/podcast_week
+fields:
+  - date
+  - podcast_title
+  - podcast_downloads
+  - unique_listeners
+  - avg_session_duration_seconds
+  - total_listening_hours
 start_date: "{start_date}"
 end_date: "{end_date}"

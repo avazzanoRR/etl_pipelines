@@ -1,3 +1,10 @@
-download_id: article_views
+name: article_views
+resource: /google/article_views
+fields:
+  - date
+  - page_path
+  - sessions
+  - bounceRate
+  - avgSessionDuration
 start_date: "{start_date}"
 end_date: "{end_date}"

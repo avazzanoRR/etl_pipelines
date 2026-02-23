@@ -1,3 +1,13 @@
-download_id: consumption
+name: consumption
+resource: /omny/consumption
+fields:
+  - date
+  - episode_id
+  - episode_title
+  - plays
+  - unique_listeners
+  - avg_listen_duration_seconds
+  - completion_rate
+  - downloads
 start_date: "{start_date}"
 end_date: "{end_date}"
