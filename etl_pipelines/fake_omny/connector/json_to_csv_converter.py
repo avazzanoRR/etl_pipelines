@@ -6,7 +6,7 @@ from typing import Any
 from datetime import datetime
 
 
-class FakeOmnyhJsonToCsvConverter:
+class FakeOmnyJsonToCsvConverter:
     """Converts fake Omny JSON output to CSV."""
     def __init__(self, json_path: str):
         self.json_path = json_path
