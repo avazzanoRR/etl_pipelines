@@ -1,5 +1,5 @@
 import logging
-import csv
+from datetime import datetime
 import json
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -53,7 +53,8 @@ class BaseDownloadRunner(ABC):
         output_dir = Path(self.main_config.get("output_path", "/tmp"))
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        json_path = output_dir / f"{registry['name']}.json"
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        json_path = output_dir / f"{registry['name']}_{timestamp}.json"
         with open(json_path, 'w') as f:
             json.dump(results, f, indent=2)
         logging.info(f"Saved JSON to {json_path}")

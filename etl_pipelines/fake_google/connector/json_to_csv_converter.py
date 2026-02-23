@@ -3,6 +3,7 @@ import json
 import logging
 from pathlib import Path
 from typing import Any
+from datetime import datetime
 
 
 class FakeGoogleJsonToCsvConverter:
@@ -19,7 +20,8 @@ class FakeGoogleJsonToCsvConverter:
             logging.warning("No data to convert to CSV.")
             return
         
-        csv_path = output_dir / f"{registry['name']}.csv"
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        csv_path = output_dir / f"{registry['name']}_{timestamp}.csv"
         fieldnames = list(data[0].keys())
 
         with open(csv_path, "w", newline="") as f:
