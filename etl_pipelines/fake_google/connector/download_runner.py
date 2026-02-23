@@ -2,18 +2,14 @@ from typing import Any
 
 from etl_pipelines.base_download_runner import BaseDownloadRunner
 from etl_pipelines.fake_google.connector.connector import FakeGoogleConnector
-from etl_pipelines.fake_google.connector.get_download_registry import get_download_registry_path
 from etl_pipelines.fake_google.connector.json_to_csv_converter import FakeGoogleJsonToCsvConverter
 
 
 class FakeGoogleDownloadRunner(BaseDownloadRunner):
     """
     Dummy download runner for fake Google Analytics data.
-    Orchestrates registry loading, data generation, and saving to disk.
+    Orchestrates data generation and saving to disk.
     """
-    def _get_registry_path(self, name: str) -> str:
-        return get_download_registry_path(name)
-    
     def _fetch(self, registry: dict[str, Any]) -> Any:
         connector = FakeGoogleConnector()
         return connector.fetch_data(registry)
