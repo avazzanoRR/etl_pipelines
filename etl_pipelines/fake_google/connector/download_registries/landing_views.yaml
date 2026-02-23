@@ -1,3 +1,10 @@
-download_id: landing_views
+name: landing_views
+resource: /google/landing_views
+fields:
+  - date
+  - landingPage
+  - sessions
+  - conversions
+  - bounceRate
 start_date: "{start_date}"
 end_date: "{end_date}"

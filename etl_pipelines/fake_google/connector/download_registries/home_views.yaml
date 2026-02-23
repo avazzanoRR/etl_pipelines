@@ -1,10 +1,9 @@
-name: landing_views
-resource: /google/landing_views
+name: home_views
+resource: /google/home_views
 fields:
   - date
-  - landingPage
   - sessions
-  - conversions
-  - bounceRate
+  - newUsers
+  - pageviews
 start_date: "{start_date}"
 end_date: "{end_date}"
