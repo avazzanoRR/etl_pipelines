@@ -1,36 +1,22 @@
-import logging
 from typing import Any
-from pathlib import Path
 
+from etl_pipelines.base_download_runner import BaseDownloadRunner
+from etl_pipelines.fake_triton.connector.connector import FakeTritonConnector
 from etl_pipelines.fake_triton.connector.get_download_registry import get_download_registry_path
-from rr_data_tools.io_ops import inject_placeholders
-from rr_data_tools.io_ops import load_config
+from etl_pipelines.fake_triton.connector.json_to_csv_converter import FakeTritonJsonToCsvConverter
 
 
-class FakeTritonDownloadRunner:
+class FakeTritonDownloadRunner(BaseDownloadRunner):
     """
-    Download runner for Triton.
-    In production this would contain real HTTP/API logic specific to this source.
+    Dummy download runner for fake Triton data.
+    Orchestrates registry loading, data generation, and saving to disk.
     """
-
-    def __init__(self, main_config: dict[str, Any], download_params: dict[str, Any], verbose: bool=False):
-        self.main_config = main_config
-        self.download_params = download_params
-        self.verbose = verbose
-        self.name = download_params.get("name", "")
-
-    def run(self):
-        logging.info(f"Starting download: '{self.name}'")
-        logging.info(f"Config contents: {self.main_config}")
-
-        if self.verbose:
-            logging.info(f"Download parameters: {self.download_params}")
-
-        # Inject placeholders into download registry YAML
-        registry_path = get_download_registry_path(self.name)
-        registry = load_config(Path(registry_path))
-        registry = inject_placeholders(registry, **self.download_params.get('filters', {}))
-
-        logging.info(f"Download registry after injecting placeholders: {registry}")
-
-        logging.info(f"Finished downloading '{self.name}'")
+    def _get_registry_path(self, name: str) -> str:
+        return get_download_registry_path(name)
+    
+    def _fetch(self, registry: dict[str, Any]) -> Any:
+        connector = FakeTritonConnector()
+        return connector.fetch_data(registry)
+    
+    def _make_converter(self, json_path: str) -> FakeTritonJsonToCsvConverter:
+        return FakeTritonJsonToCsvConverter(json_path)
