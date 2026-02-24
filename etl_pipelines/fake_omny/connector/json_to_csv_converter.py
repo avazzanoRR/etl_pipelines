@@ -6,25 +6,23 @@ from typing import Any
 from datetime import datetime
 
 
-def convert_to_csv(json_path: str, registry: dict[str, Any], main_config: dict[str, Any]) -> None:
-    """Read JSON file, write filtered CSV to output directory."""
+def convert_to_csv(name: str, json_path: str, convert_cfg: dict[str, Any], main_config: dict[str, Any]) -> None:
+    """Read JSON file, write filtered CSV to raw directory."""
     with open(json_path, "r") as f:
         data = json.load(f)
 
     if not data:
-        logging.warning("No data to convert to CSV.")
+        logging.warning(f"No data to convert for '{name}'.")
         return
-    
-    output_dir = Path(main_config.get("raw_dir", "/tmp"))
-    output_dir.mkdir(parents=True, exist_ok=True)
 
-    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    csv_path = output_dir / f"{registry['name']}_{timestamp}.csv"
+    raw_dir = Path(main_config.get("raw_dir", "/tmp"))
+    raw_dir.mkdir(parents=True, exist_ok=True)
 
-    fieldnames = registry.get("fields", list(data[0].keys()))
+    fieldnames = convert_cfg.get("fields", list(data[0].keys()))
+    csv_path = raw_dir / f"{Path(json_path).stem}.csv"
 
     with open(csv_path, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction='ignore')
+        writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(data)
 
