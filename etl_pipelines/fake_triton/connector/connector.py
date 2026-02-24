@@ -22,10 +22,10 @@ DUMMY_VALUES = {
 
 class FakeTritonConnector:
     """Generates fake Triton shaped data."""
-    def fetch_data(self, registry: dict[str, Any]) -> list[dict[str, Any]]:
-        start_date = registry.get("start_date", "2025-01-01")
-        end_date = registry.get("end_date", "2025-01-07")
-        daypart = registry.get("daypart", "")
+    def fetch_data(self, fetch_cfg: dict[str, Any]) -> list[dict[str, Any]]:
+        start_date = fetch_cfg.get("start_date", "2025-01-01")
+        end_date = fetch_cfg.get("end_date", "2025-01-07")
+        daypart = fetch_cfg.get("daypart", "")
         dates = self._date_range(start_date, end_date)
 
         results = []
