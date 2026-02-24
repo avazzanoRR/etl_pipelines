@@ -4,17 +4,6 @@ from datetime import datetime, timedelta
 from typing import Any
 
 
-def _date_range(start_date: str, end_date: str) -> list[str]:
-    start = datetime.strptime(start_date, "%Y-%m-%d")
-    end = datetime.strptime(end_date, "%Y-%m-%d")
-    dates = []
-    current = start
-    while current <= end:
-        dates.append(current.strftime("%Y-%m-%d"))
-        current += timedelta(days=1)
-    return dates
-
-
 DUMMY_VALUES = {
     "station": lambda: random.choice(["WNOM", "WJMD", "WLOL", "WNFT"]),
     "stream_count": lambda: random.randint(100, 50000),
@@ -33,28 +22,29 @@ DUMMY_VALUES = {
 
 
 class FakeTritonConnector:
-    """Generates fake Triton streaming analytics shaped data."""
-
-    def fetch_data(self, registry: dict[str, Any]) -> list[dict]:
-        fields = registry.get("fields", [])
+    """Generates fake Triton shaped data."""
+    def fetch_data(self, registry: dict[str, Any]) -> list[dict[str, Any]]:
         start_date = registry.get("start_date", "2025-01-01")
         end_date = registry.get("end_date", "2025-01-07")
-        daypart = registry.get("daypart", "")
-        dates = _date_range(start_date, end_date)
+        dates = self._date_range(start_date, end_date)
 
         results = []
         for date in dates:
-            row = {}
-            for field in fields:
-                if field == "date":
-                    row["date"] = date
-                elif field == "daypart":
-                    row["daypart"] = daypart
-                elif field in DUMMY_VALUES and DUMMY_VALUES[field] is not None:
-                    row[field] = DUMMY_VALUES[field]()
-                else:
-                    row[field] = "unknown"
+            row = {"date": date}
+            for field, generator in DUMMY_VALUES.items():
+                row[field] = generator()
             results.append(row)
 
-        logging.info(f"Generated {len(results)} dummy rows for '{registry['name']}'")
+        logging.info(f"Fetched {len(results)} rows of data.")
         return results
+    
+
+    def _date_range(self, start_date: str, end_date: str) -> list[str]:
+        start = datetime.strptime(start_date, "%Y-%m-%d")
+        end = datetime.strptime(end_date, "%Y-%m-%d")
+        dates = []
+        current = start
+        while current <= end:
+            dates.append(current.strftime("%Y-%m-%d"))
+            current += timedelta(days=1)
+        return dates

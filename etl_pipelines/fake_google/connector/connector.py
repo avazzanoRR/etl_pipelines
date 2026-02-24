@@ -19,21 +19,15 @@ DUMMY_VALUES = {
 class FakeGoogleConnector:
     """Generates fake Google Analytics data."""
     def fetch_data(self, registry: dict[str, Any]) -> list[dict[str, Any]]:
-        fields = registry.get("fields", [])
         start_date = registry.get("start_date", "2025-01-01")
         end_date = registry.get("end_date", "2025-01-07")
         dates = self._date_range(start_date, end_date)
 
         results = []
         for date in dates:
-            row = {}
-            for field in fields:
-                if field == "date":
-                    row["date"] = date
-                elif field in DUMMY_VALUES:
-                    row[field] = DUMMY_VALUES[field]()
-                else:
-                    row[field] = "unknown"
+            row = {"date": date}
+            for field, generator in DUMMY_VALUES.items():
+                row[field] = generator()
             results.append(row)
 
         logging.info(f"Fetched {len(results)} rows of data.")

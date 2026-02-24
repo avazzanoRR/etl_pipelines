@@ -22,7 +22,8 @@ class FakeTritonJsonToCsvConverter:
         
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         csv_path = output_dir / f"{registry['name']}_{timestamp}.csv"
-        fieldnames = list(data[0].keys())
+
+        fieldnames = registry.get("fields", list(data[0].keys()))
 
         with open(csv_path, "w", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=fieldnames)
