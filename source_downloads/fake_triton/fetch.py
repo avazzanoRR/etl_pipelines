@@ -4,12 +4,12 @@ from pathlib import Path
 from datetime import datetime
 from typing import Any
 
-from source_downloads.fake_omny.connector.connector import FakeOmnyConnector
+from source_downloads.fake_triton.connector import FakeTritonConnector
 
 
 def fetch_data(name: str, fetch_cfg: dict[str, Any]) -> str:
     """Instantiate connector, fetch data, write to JSON, return file path."""
-    connector = FakeOmnyConnector()
+    connector = FakeTritonConnector()
     results = connector.fetch_data(fetch_cfg)
 
     output_dir = Path(fetch_cfg.get("source_dir", "/tmp"))
