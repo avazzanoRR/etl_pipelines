@@ -7,12 +7,12 @@ from typing import Any
 from etl_pipelines.fake_omny.connector.connector import FakeOmnyConnector
 
 
-def fetch_data(name: str, fetch_cfg: dict[str, Any], main_config: dict[str, Any]) -> str:
+def fetch_data(name: str, fetch_cfg: dict[str, Any]) -> str:
     """Instantiate connector, fetch data, write to JSON, return file path."""
     connector = FakeOmnyConnector()
     results = connector.fetch_data(fetch_cfg)
 
-    output_dir = Path(main_config.get("source_dir", "/tmp"))
+    output_dir = Path(fetch_cfg.get("source_dir", "/tmp"))
     output_dir.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
     json_path = output_dir / f"{name}_{timestamp}.json"

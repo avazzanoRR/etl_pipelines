@@ -6,7 +6,7 @@ from typing import Any
 from datetime import datetime
 
 
-def convert_to_csv(name: str, json_path: str, convert_cfg: dict[str, Any], main_config: dict[str, Any]) -> None:
+def convert_to_csv(name: str, json_path: str, convert_cfg: dict[str, Any]) -> None:
     """Read JSON file, write filtered CSV to raw directory."""
     with open(json_path, "r") as f:
         data = json.load(f)
@@ -15,7 +15,7 @@ def convert_to_csv(name: str, json_path: str, convert_cfg: dict[str, Any], main_
         logging.warning(f"No data to convert for '{name}'.")
         return
 
-    raw_dir = Path(main_config.get("raw_dir", "/tmp"))
+    raw_dir = Path(convert_cfg.get("raw_dir", "/tmp"))
     raw_dir.mkdir(parents=True, exist_ok=True)
 
     fieldnames = convert_cfg.get("fields", list(data[0].keys()))
