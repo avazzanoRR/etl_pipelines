@@ -26,7 +26,7 @@ class FakeGoogleJsonToCsvConverter:
         fieldnames = registry.get("fields", list(data[0].keys()))
 
         with open(csv_path, "w", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction='ignore')
             writer.writeheader()
             writer.writerows(data)
 
