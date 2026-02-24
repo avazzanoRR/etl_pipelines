@@ -1,9 +1,0 @@
-name: home_views
-resource: /google/home_views
-fields:
-  - date
-  - sessions
-  - newUsers
-  - pageviews
-start_date: "{start_date}"
-end_date: "{end_date}"

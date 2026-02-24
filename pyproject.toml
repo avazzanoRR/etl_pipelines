@@ -3,8 +3,8 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "etl_pipelines"
-version = "0.1.0"
+name = "source_downloads"
+version = "1.0.0"
 description = "Dummy ETL pipeline package for Airflow DAG factory exploration"
 requires-python = ">=3.11"
 dependencies = [
@@ -13,9 +13,4 @@ dependencies = [
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["etl_pipelines*"]
-
-[tool.setuptools.package-data]
-"etl_pipelines.fake_triton.connector.download_registries" = ["*.yaml"]
-"etl_pipelines.fake_omny.connector.download_registries" = ["*.yaml"]
-"etl_pipelines.fake_google.connector.download_registries" = ["*.yaml"]
+include = ["source_downloads*"]
