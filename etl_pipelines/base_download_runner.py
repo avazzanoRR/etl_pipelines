@@ -50,14 +50,17 @@ class BaseDownloadRunner(ABC):
 
     def _save(self, registry: dict[str, Any], results: Any) -> None:
         """Default save: write JSON, then convert to CSV."""
-        output_dir = Path(self.main_config.get("output_path", "/tmp"))
-        output_dir.mkdir(parents=True, exist_ok=True)
+        # Retrieve and create output directories
+        source_dir = Path(self.main_config.get("source_dir", "/tmp"))
+        raw_dir = Path(self.main_config.get("raw_dir", "/tmp"))
+        source_dir.mkdir(parents=True, exist_ok=True)
+        raw_dir.mkdir(parents=True, exist_ok=True)
 
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-        json_path = output_dir / f"{registry['name']}_{timestamp}.json"
+        json_path = source_dir / f"{registry['name']}_{timestamp}.json"
         with open(json_path, 'w') as f:
             json.dump(results, f, indent=2)
         logging.info(f"Saved JSON to {json_path}")
 
         converter = self._make_converter(str(json_path))
-        converter.convert_to_csv(output_dir, registry)
+        converter.convert_to_csv(raw_dir, registry)
