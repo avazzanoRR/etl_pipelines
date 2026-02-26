@@ -4,14 +4,13 @@ import logging
 from pathlib import Path
 from typing import Any
 
-
-def convert_to_csv(name: str, json_path: str, convert_cfg: dict[str, Any]) -> None:
+def convert_to_csv(json_path: str, convert_cfg: dict[str, Any]) -> None:
     """Read JSON file, write filtered CSV to raw directory."""
     with open(json_path, "r") as f:
         data = json.load(f)
 
     if not data:
-        logging.warning(f"No data to convert for '{name}'.")
+        logging.warning(f"No data to convert for '{json_path}'.")
         return
 
     raw_dir = Path(convert_cfg.get("raw_dir", "/tmp"))
