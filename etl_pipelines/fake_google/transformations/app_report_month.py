@@ -23,7 +23,8 @@ def transform(file_path: str, transform_cfg: dict[str, Any]) -> str:
         # Add a calculated column
         df["sessions_per_new_user"] = df["total_sessions"] / df["new_users"]
 
-        transformed_path = staging_dir / Path(file_path).name
+        stem = Path(file_path).stem.replace("_extract", "")
+        transformed_path = staging_dir / f"{stem}_transform.parquet"
         df.to_parquet(transformed_path, index=False)
 
         logging.info(f"Transform successful. Written to: {transformed_path}")

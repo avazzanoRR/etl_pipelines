@@ -29,8 +29,8 @@ def extract(file_path: str, extract_cfg: dict[str, Any]) -> str:
         # Cast columns to expected dtypes
         for col, dtype in column_types.items():
             df[col] = df[col].astype(dtype)
-
-        staging_path = staging_dir / Path(file_path).name
+        
+        staging_path = staging_dir / f"{Path(file_path).stem}_extract.parquet"
         df.to_parquet(staging_path, index=False)
 
         logging.info(f"Extract successful. Staged to: {staging_path}")
