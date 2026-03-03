@@ -13,4 +13,4 @@ dependencies = [
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["etl_pipelines*"]
+include = ["transformations*", "data_models*"]
