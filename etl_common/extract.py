@@ -3,7 +3,7 @@ import shutil
 from pathlib import Path
 from typing import Any
 
-from transformations.parquet_reader import ParquetReader
+from etl_common.parquet_reader import ParquetReader
 
 
 def extract(file_path: str, extract_cfg: dict[str, Any]) -> str:
