@@ -28,27 +28,27 @@ def _build_engine(database_cfg: dict) -> sqlalchemy.engine.base.Engine:
     return create_engine(uri)
 
 
-def load_to_stage(file_path: str, load_cfg: dict[str, Any]) -> str:
+def load_to_stage(file_path: str, stage_cfg: dict[str, Any]) -> str:
     """
     Reads a validated parquet file and inserts into SQL Server staging table in parallel chunks.
     On failure, moves the file to quarantine.
     """
-    quarantine_dir = Path(load_cfg["quarantine_dir"])
+    quarantine_dir = Path(stage_cfg["quarantine_dir"])
     quarantine_dir.mkdir(parents=True, exist_ok=True)
 
     try:
         df = pd.read_parquet(file_path)
 
         logging.info(f"Importing staging table class and base")
-        staging_table = _import_class(load_cfg["staging_table"])
-        base = _import_class(load_cfg["base"])
+        staging_table = _import_class(stage_cfg["staging_table"])
+        base = _import_class(stage_cfg["base"])
 
         logging.info(f"Building engine and creating staging table if not exists")
-        engine = _build_engine(load_cfg["database"])
+        engine = _build_engine(stage_cfg["database"])
         base.metadata.create_all(engine, checkfirst=True)
         session_factory = sessionmaker(bind=engine)
 
-        batch_cfg = load_cfg.get("batching", {})
+        batch_cfg = stage_cfg.get("batching", {})
         chunk_size = batch_cfg.get("chunk_size", 10000)
         max_workers = batch_cfg.get("max_workers", 5)
 
