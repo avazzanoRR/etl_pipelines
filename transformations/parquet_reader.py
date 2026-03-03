@@ -52,5 +52,7 @@ class ParquetReader:
                 f"that are not in schema. Dropping: {extra_columns}"
             )
             df = df.drop(columns=extra_columns)
+
+        # fail if missing cols
         
         return df
