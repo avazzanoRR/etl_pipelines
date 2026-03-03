@@ -21,7 +21,7 @@ def transform(file_path: str, transform_cfg: dict[str, Any]) -> str:
         df = df.rename(columns={"newUsers": "new_users", "sessions": "total_sessions"})
 
         # Add a calculated column
-        df["sessions_per_new_user"] = df["total_sessions"] / df["new_users"]
+        df["sessions_per_new_user"] = (df["total_sessions"] / df["new_users"]).astype("float64")
 
         stem = Path(file_path).stem.replace("_extract", "")
         transformed_path = staging_dir / f"{stem}_transform.parquet"
