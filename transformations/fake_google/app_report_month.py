@@ -18,10 +18,16 @@ def transform(file_path: str, transform_cfg: dict[str, Any]) -> str:
         df = pd.read_parquet(file_path)
 
         # Rename columns to snake_case
+        logging.info(f"Renaming columns")
         df = df.rename(columns={"newUsers": "new_users", "sessions": "total_sessions"})
 
         # Add a calculated column
-        df["sessions_per_new_user"] = (df["total_sessions"] / df["new_users"]).astype("float64")
+        logging.info(f"Calculating sessions_per_new_user")
+        df["sessions_per_new_user"] = (df["total_sessions"] / df["new_users"])
+
+        # Round sessions_per_new_user to 2 decimal places
+        df["sessions_per_new_user"] = df["sessions_per_new_user"].round(2).astype("float64")
+
 
         stem = Path(file_path).stem.replace("_extract", "")
         transformed_path = staging_dir / f"{stem}_transform.parquet"
