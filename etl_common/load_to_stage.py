@@ -20,38 +20,34 @@ def _import_class(dotted_path: str):
     return getattr(module, class_name)
 
 
-def _build_engine(database_cfg: dict) -> sqlalchemy.engine.base.Engine:
-    """Build a SQLAlchemy engine from the database config using MSSQLConnectionConfig."""
-    conn_cfg = MSSQLConnectionConfig(**database_cfg["connection"])
-    conn_cfg.validate()
-    uri = conn_cfg.get_uri()
-    logging.info(f"Creating SQLAlchemy engine with URI: {uri}")
-    return create_engine(uri)
-
-
-def load_to_stage(file_path: str, stage_cfg: dict[str, Any]) -> str:
+def load_to_stage(file_path: str, staging_table_class_path: str, base_class_path: str, quarantine_dir: str, database_uri: str, chunk_size: int = 10000, max_workers: int = 5) -> str:
     """
     Reads a validated parquet file and inserts into SQL Server staging table in parallel chunks.
     On failure, moves the file to quarantine.
+    
+    Parameters:
+    - file_path: Path to the validated parquet file to load.
+    - staging_table_class_path: Dotted path to the SQLAlchemy ORM class representing the staging table schema.
+    - base_class_path: Dotted path to the SQLAlchemy declarative base class for metadata.
+    - quarantine_dir: Directory to move the file if loading fails.
+    - database_uri: Database connection URI for SQLAlchemy engine.
+    - chunk_size: Number of rows per chunk for parallel insertion.
+    - max_workers: Maximum number of parallel workers for insertion.
     """
-    quarantine_dir = Path(stage_cfg["quarantine_dir"])
+    quarantine_dir = Path(quarantine_dir)
     quarantine_dir.mkdir(parents=True, exist_ok=True)
 
     try:
         df = pd.read_parquet(file_path)
 
-        logging.info(f"Importing staging table class and base")
-        staging_table = _import_class(stage_cfg["staging_table"])
-        base = _import_class(stage_cfg["base"])
+        logging.info(f"Importing staging table class and base class")
+        staging_table = _import_class(staging_table_class_path)
+        base = _import_class(base_class_path)
 
-        logging.info(f"Building engine and creating staging table if not exists")
-        engine = _build_engine(stage_cfg["database"])
+        logging.info(f"Building SQLAlchemy engine and creating staging table if not exists")
+        engine = create_engine(database_uri)
         base.metadata.create_all(engine, checkfirst=True)
         session_factory = sessionmaker(bind=engine)
-
-        batch_cfg = stage_cfg.get("batching", {})
-        chunk_size = batch_cfg.get("chunk_size", 10000)
-        max_workers = batch_cfg.get("max_workers", 5)
 
         logging.info(f"Inserting {file_path} into staging table in parallel chunks")
         chunks = split_dataframe(df, chunk_size)
