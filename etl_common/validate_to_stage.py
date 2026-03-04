@@ -20,6 +20,7 @@ def validate_to_stage(file_path: str, validate_cfg: dict[str, Any]) -> str:
     """
     Reads a transformed parquet file, validates against the staging table schema.
     On failure, moves the file to quarantine.
+    #todo: add comments about validation steps
     """
     quarantine_dir = Path(validate_cfg["quarantine_dir"])
     quarantine_dir.mkdir(parents=True, exist_ok=True)

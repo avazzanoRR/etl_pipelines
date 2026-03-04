@@ -4,8 +4,7 @@ from pathlib import Path
 from typing import Any
 import pandas as pd
 
-
-def extract(raw_path: str, extract_cfg: dict[str, Any]) -> str:
+def extract_parquet(raw_path: str, extract_cfg: dict[str, Any]) -> str:
     """
     Reads a parquet file, validates columns, and returns path to the staged file.
     
