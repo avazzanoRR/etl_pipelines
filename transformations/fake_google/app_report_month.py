@@ -6,12 +6,10 @@ from typing import Any
 import pandas as pd
 
 
-def transform(file_path: str, processing_dir: str, quarantine_dir: str) -> str:
+def transform(file_path: str, processing_dir: str) -> str:
     """Transforms a parquet file. Outputs to processing_dir or moves to quarantine_dir on failure."""
     processing_dir = Path(processing_dir)
-    quarantine_dir = Path(quarantine_dir)
     processing_dir.mkdir(parents=True, exist_ok=True)
-    quarantine_dir.mkdir(parents=True, exist_ok=True)
 
     try:
         df = pd.read_parquet(file_path)
@@ -37,7 +35,4 @@ def transform(file_path: str, processing_dir: str, quarantine_dir: str) -> str:
     
     except Exception as e:
         logging.error(f"Transform failed for {file_path}: {e}")
-        quarantine_path = quarantine_dir / Path(file_path).name
-        shutil.move(file_path, quarantine_path)
-        logging.warning(f"Moved failed file to quarantine: {quarantine_path}")
         raise

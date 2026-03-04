@@ -17,7 +17,7 @@ def _import_class(dotted_path: str):
     return getattr(module, class_name)
 
 
-def load_to_stage(file_path: str, staging_table_class_path: str, base_class_path: str, quarantine_dir: str, database_uri: str, chunk_size: int = 10000, max_workers: int = 5) -> str:
+def load_to_stage(file_path: str, staging_table_class_path: str, base_class_path: str, database_uri: str, chunk_size: int = 10000, max_workers: int = 5) -> str:
     """
     Reads a validated parquet file and inserts into SQL Server staging table in parallel chunks.
     On failure, moves the file to quarantine.
@@ -26,14 +26,10 @@ def load_to_stage(file_path: str, staging_table_class_path: str, base_class_path
     - file_path: Path to the validated parquet file to load.
     - staging_table_class_path: Dotted path to the SQLAlchemy ORM class representing the staging table schema.
     - base_class_path: Dotted path to the SQLAlchemy declarative base class for metadata.
-    - quarantine_dir: Directory to move the file if loading fails.
     - database_uri: Database connection URI for SQLAlchemy engine.
     - chunk_size: Number of rows per chunk for parallel insertion.
     - max_workers: Maximum number of parallel workers for insertion.
     """
-    quarantine_dir = Path(quarantine_dir)
-    quarantine_dir.mkdir(parents=True, exist_ok=True)
-
     try:
         df = pd.read_parquet(file_path)
 
@@ -55,7 +51,4 @@ def load_to_stage(file_path: str, staging_table_class_path: str, base_class_path
 
     except Exception as e:
         logging.error(f"Load to stage failed for {file_path}: {e}")
-        quarantine_path = quarantine_dir / Path(file_path).name
-        shutil.move(file_path, quarantine_path)
-        logging.warning(f"Moved {file_path} to quarantine: {quarantine_path}")
         raise

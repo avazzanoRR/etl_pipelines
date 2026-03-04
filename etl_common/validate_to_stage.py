@@ -15,7 +15,7 @@ def _import_class(dotted_path: str):
     return getattr(module, class_name)
 
 
-def validate_to_stage(file_path: str, staging_table_class_path: str, quarantine_dir: str) -> str:
+def validate_to_stage(file_path: str, staging_table_class_path: str) -> str:
     """
     Reads a transformed parquet file, validates against the staging table schema.
     On failure, moves the file to quarantine.
@@ -23,11 +23,7 @@ def validate_to_stage(file_path: str, staging_table_class_path: str, quarantine_
     Parameters:
     - file_path: Path to the transformed parquet file to validate.
     - staging_table_class_path: Dotted path to the SQLAlchemy ORM class representing the staging table schema.
-    - quarantine_dir: Directory to move the file if validation fails.
     """
-    quarantine_dir = Path(quarantine_dir)
-    quarantine_dir.mkdir(parents=True, exist_ok=True)
-
     try:
         df = pd.read_parquet(file_path)
 
@@ -43,7 +39,4 @@ def validate_to_stage(file_path: str, staging_table_class_path: str, quarantine_
 
     except Exception as e:
         logging.error(f"Validation failed for {file_path}: {e}")
-        quarantine_path = quarantine_dir / Path(file_path).name
-        shutil.move(file_path, quarantine_path)
-        logging.warning(f"Moved {file_path} to quarantine: {quarantine_path}")
         raise

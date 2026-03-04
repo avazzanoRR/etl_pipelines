@@ -4,7 +4,7 @@ import shutil
 import pandas as pd
 
 
-def cast_datatypes(file_path: str, processing_dir: str, quarantine_dir: str, column_types: dict[str, str]) -> str:
+def cast_datatypes(file_path: str, processing_dir: str, column_types: dict[str, str]) -> str:
     """
     Reads a parquet file, casts columns to specified dtypes, and writes back to processing directory.
     On failure, moves the file to quarantine.
@@ -12,13 +12,10 @@ def cast_datatypes(file_path: str, processing_dir: str, quarantine_dir: str, col
     Parameters:
     - file_path: Path to the input parquet file.
     - processing_dir: Directory to write the processed file.
-    - quarantine_dir: Directory to move the file if processing fails.
     - column_types: Dict mapping column names to target dtypes (e.g. {"sessions_per_new_user": "float64"}).
     """
     processing_dir = Path(processing_dir)
-    quarantine_dir = Path(quarantine_dir)
     processing_dir.mkdir(parents=True, exist_ok=True)
-    quarantine_dir.mkdir(parents=True, exist_ok=True)
 
     try:
         df = pd.read_parquet(file_path)
@@ -42,7 +39,4 @@ def cast_datatypes(file_path: str, processing_dir: str, quarantine_dir: str, col
     
     except Exception as e:
         logging.error(f"Cast failed for {file_path}: {e}")
-        quarantine_path = quarantine_dir / Path(file_path).name
-        shutil.move(file_path, quarantine_path)
-        logging.warning(f"Moved {file_path} to quarantine: {quarantine_path}")
         raise

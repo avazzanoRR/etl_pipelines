@@ -4,20 +4,17 @@ from pathlib import Path
 import pandas as pd
 
 
-def extract_parquet(raw_path: str, processing_dir: str, quarantine_dir: str, columns: list[str]) -> str:
+def extract_parquet(raw_path: str, processing_dir: str, columns: list[str]) -> str:
     """
     Reads a parquet file, validates columns, and returns path to the processed file.
     
     Parameters:
     - raw_path: Path to the input parquet file.
     - processing_dir: Directory to write the processed file.
-    - quarantine_dir: Directory to move the file if processing fails.
     - columns: List of expected columns in the parquet file.
     """
     processing_dir = Path(processing_dir)
-    quarantine_dir = Path(quarantine_dir)
     processing_dir.mkdir(parents=True, exist_ok=True)
-    quarantine_dir.mkdir(parents=True, exist_ok=True)
 
     try:
         logging.info(f"Reading parquet file: {raw_path}")
@@ -33,9 +30,6 @@ def extract_parquet(raw_path: str, processing_dir: str, quarantine_dir: str, col
 
     except Exception as e:
         logging.error(f"Extract failed for {raw_path}: {e}")
-        quarantine_path = quarantine_dir / Path(raw_path).name
-        shutil.move(raw_path, quarantine_path)
-        logging.warning(f"Moved {raw_path} to quarantine: {quarantine_path}")
         raise
 
 
