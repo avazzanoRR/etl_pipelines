@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, Identity, Numeric
-from sqlalchemy.dialects.mssql import DATE
+from sqlalchemy.dialects.mssql import DATE, DATETIME2
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
@@ -14,6 +14,8 @@ class RptAppReportMonth(Base):
     total_sessions = Column(Integer, nullable=False)
     new_users = Column(Integer, nullable=False)
     sessions_per_new_user = Column(Numeric(18, 2), nullable=False)
+    record_insert_datetime = Column(DATETIME2, nullable=False)
+    record_update_datetime = Column(DATETIME2, nullable=False)
 
 
 class StageRptAppReportMonth(Base):
