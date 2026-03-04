@@ -1,5 +1,4 @@
 import logging
-from typing import Any
 from pathlib import Path
 import shutil
 import pandas as pd

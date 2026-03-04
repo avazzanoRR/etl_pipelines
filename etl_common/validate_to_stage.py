@@ -1,7 +1,6 @@
 import logging
 import shutil
 from pathlib import Path
-from typing import Any
 from importlib import import_module
 
 import pandas as pd

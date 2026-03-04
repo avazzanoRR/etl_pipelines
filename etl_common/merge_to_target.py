@@ -1,11 +1,8 @@
 import logging
-import shutil
-from pathlib import Path
 from typing import Any
 from importlib import import_module
 from sqlalchemy import create_engine
 
-from relevant_radio_etl.registry_schemas import MSSQLConnectionConfig
 from rr_data_tools.sql_ops import MergeQueryBuilder, execute_merge
 
 
@@ -16,29 +13,28 @@ def _import_class(dotted_path: str):
     return getattr(module, class_name)
 
 
-def _build_engine(database_cfg: dict):
-    """Build a SQLAlchemy engine from the database config using MSSQLConnectionConfig."""
-    conn_cfg = MSSQLConnectionConfig(**database_cfg["connection"])
-    conn_cfg.validate()
-    uri = conn_cfg.get_uri()
-    return create_engine(uri)
-
-
-def merge_to_target(file_path: str, merge_cfg: dict[str, Any]) -> str:
+def merge_to_target(file_path: str, staging_table_class_path: str, target_table_class_path: str, database_uri: str, query_params: dict[str, Any]) -> str:
     """
-    Merges data from the staging table into the target table using a MERGE statement.
+    Merges data from the staging table into the target table.
     Staging table is automatically truncated after a successful merge.
+    
+    Parameters:
+    - file_path: Path to the file being merged (used for logging and error handling).
+    - staging_table_class_path: Dotted path to the SQLAlchemy ORM class representing the staging table schema.
+    - target_table_class_path: Dotted path to the SQLAlchemy ORM class representing the target table schema.
+    - database_uri: Database connection URI for SQLAlchemy engine.
+    - query_params: Instructions to build the MERGE statement. Includes match_keys, insert_columns, update_columns, etc.
     """
     try:
-        staging_table = _import_class(merge_cfg["staging_table"])
-        target_table = _import_class(merge_cfg["target_table"])
+        staging_table = _import_class(staging_table_class_path)
+        target_table = _import_class(target_table_class_path)
 
-        engine = _build_engine(merge_cfg["database"])
+        engine = create_engine(database_uri)
 
         logging.info(f"Building MERGE query")
-        merge_builder = MergeQueryBuilder(staging_table, target_table, merge_cfg.get("query_params"))
+        merge_builder = MergeQueryBuilder(staging_table, target_table, query_params)
         merge_query = merge_builder.build()
-
+        
         logging.info(f"Executing MERGE query from {staging_table.__tablename__} to {target_table.__tablename__}")
         execute_merge(engine, merge_query, staging_table, target_table)
         logging.info(f"Merge successful from {staging_table.__tablename__} to {target_table.__tablename__}")
