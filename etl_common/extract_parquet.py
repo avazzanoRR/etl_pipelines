@@ -4,19 +4,20 @@ from pathlib import Path
 from typing import Any
 import pandas as pd
 
-def extract_parquet(raw_path: str, extract_cfg: dict[str, Any]) -> str:
+
+def extract_parquet(raw_path: str, processing_dir: str, quarantine_dir: str, columns: list[str]) -> str:
     """
-    Reads a parquet file, validates columns, and returns path to the staged file.
+    Reads a parquet file, validates columns, and returns path to the processed file.
     
     Parameters:
     - raw_path: Path to the input parquet file.
-    - extract_cfg: Configuration dict with staging_dir, quarantine_dir, and columns.
+    - processing_dir: Directory to write the processed file.
+    - quarantine_dir: Directory to move the file if processing fails.
+    - columns: List of expected columns in the parquet file.
     """
-    staging_dir = Path(extract_cfg["staging_dir"])
-    quarantine_dir = Path(extract_cfg["quarantine_dir"])
-    columns = extract_cfg["columns"]
-
-    staging_dir.mkdir(parents=True, exist_ok=True)
+    processing_dir = Path(processing_dir)
+    quarantine_dir = Path(quarantine_dir)
+    processing_dir.mkdir(parents=True, exist_ok=True)
     quarantine_dir.mkdir(parents=True, exist_ok=True)
 
     try:
@@ -26,7 +27,7 @@ def extract_parquet(raw_path: str, extract_cfg: dict[str, Any]) -> str:
         logging.info(f"Validating columns in {raw_path}")
         df = validate_and_filter_columns(df, columns)
 
-        staging_path = staging_dir / f"{Path(raw_path).stem}_extract.parquet"
+        staging_path = processing_dir / f"{Path(raw_path).stem}_extract.parquet"
         df.to_parquet(staging_path, index=False)
         logging.info(f"Extract successful. Staged to: {staging_path}")
         return str(staging_path)
