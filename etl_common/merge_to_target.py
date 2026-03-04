@@ -39,8 +39,6 @@ def merge_to_target(file_path: str, staging_table_class_path: str, target_table_
         execute_merge(engine, merge_query, staging_table, target_table)
         logging.info(f"Merge successful from {staging_table.__tablename__} to {target_table.__tablename__}")
 
-        return file_path
-
     except Exception as e:
         logging.error(f"Merge to target failed for {file_path}: {e}")
         raise
