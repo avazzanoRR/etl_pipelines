@@ -25,6 +25,7 @@ def _build_engine(database_cfg: dict) -> sqlalchemy.engine.base.Engine:
     conn_cfg = MSSQLConnectionConfig(**database_cfg["connection"])
     conn_cfg.validate()
     uri = conn_cfg.get_uri()
+    logging.info(f"Creating SQLAlchemy engine with URI: {uri}")
     return create_engine(uri)
 
 
