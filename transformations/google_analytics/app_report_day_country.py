@@ -1,6 +1,5 @@
 import logging
 from pathlib import Path
-
 import pandas as pd
 
 
@@ -18,6 +17,7 @@ def transform(input_filepath: str, output_dir: str) -> str:
         df = df.where(pd.notna(df), None)
 
         
+        # Save transformed file to output directory
         stem = Path(input_filepath).stem.replace("_cast", "")
         transformed_path = output_dir / f"{stem}_transform.parquet"
         df.to_parquet(transformed_path, index=False)

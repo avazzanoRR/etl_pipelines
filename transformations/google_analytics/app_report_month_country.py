@@ -7,7 +7,7 @@ def transform(input_filepath: str, output_dir: str) -> str:
     """Transforms a parquet file. Outputs to output_dir."""
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     logging.info(f"Starting transform for: {input_filepath}")
     try:
         df = pd.read_parquet(input_filepath)
