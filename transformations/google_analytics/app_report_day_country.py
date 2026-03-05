@@ -12,18 +12,11 @@ def transform(input_filepath: str, output_dir: str) -> str:
     try:
         df = pd.read_parquet(input_filepath)
 
-        # Rename columns to snake_case
-        logging.info(f"Renaming columns")
-        df = df.rename(columns={"newUsers": "new_users", "sessions": "total_sessions"})
+        # Replace NaNs with None
+        logging.info(f"Replacing NaNs with None")
+        df = df.where(pd.notna(df), None)
 
-        # Add a calculated column
-        logging.info(f"Calculating sessions_per_new_user")
-        df["sessions_per_new_user"] = (df["total_sessions"] / df["new_users"])
-
-        # Round sessions_per_new_user to 2 decimal places
-        df["sessions_per_new_user"] = df["sessions_per_new_user"].round(2).astype("float64")
-
-
+        
         stem = Path(input_filepath).stem.replace("_cast", "")
         transformed_path = output_dir / f"{stem}_transform.parquet"
         df.to_parquet(transformed_path, index=False)
