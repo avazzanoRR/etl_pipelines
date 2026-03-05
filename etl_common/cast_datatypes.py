@@ -7,7 +7,6 @@ import pandas as pd
 def cast_datatypes(file_path: str, processing_dir: str, column_types: dict[str, str]) -> str:
     """
     Reads a parquet file, casts columns to specified dtypes, and writes back to processing directory.
-    On failure, moves the file to quarantine.
 
     Parameters:
     - file_path: Path to the input parquet file.

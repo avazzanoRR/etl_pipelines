@@ -7,7 +7,7 @@ import pandas as pd
 
 
 def transform(file_path: str, processing_dir: str) -> str:
-    """Transforms a parquet file. Outputs to processing_dir or moves to quarantine_dir on failure."""
+    """Transforms a parquet file. Outputs to processing_dir."""
     processing_dir = Path(processing_dir)
     processing_dir.mkdir(parents=True, exist_ok=True)
 

@@ -18,7 +18,6 @@ def _import_class(dotted_path: str):
 def validate_to_stage(file_path: str, staging_table_class_path: str) -> str:
     """
     Reads a transformed parquet file, validates against the staging table schema.
-    On failure, moves the file to quarantine.
     
     Parameters:
     - file_path: Path to the transformed parquet file to validate.
