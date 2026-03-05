@@ -17,15 +17,13 @@ def _import_class(dotted_path: str):
     return getattr(module, class_name)
 
 
-def load_to_stage(file_path: str, staging_table_class_path: str, base_class_path: str, database_uri: str, chunk_size: int = 10000, max_workers: int = 5) -> str:
+def load_to_stage(file_path: str, staging_table_class_path: str, database_uri: str, chunk_size: int = 10000, max_workers: int = 5) -> str:
     """
     Reads a validated parquet file and inserts into SQL Server staging table in parallel chunks.
-    On failure, moves the file to quarantine.
     
     Parameters:
     - file_path: Path to the validated parquet file to load.
     - staging_table_class_path: Dotted path to the SQLAlchemy ORM class representing the staging table schema.
-    - base_class_path: Dotted path to the SQLAlchemy declarative base class for metadata.
     - database_uri: Database connection URI for SQLAlchemy engine.
     - chunk_size: Number of rows per chunk for parallel insertion.
     - max_workers: Maximum number of parallel workers for insertion.
@@ -33,13 +31,11 @@ def load_to_stage(file_path: str, staging_table_class_path: str, base_class_path
     try:
         df = pd.read_parquet(file_path)
 
-        logging.info(f"Importing staging table class and base class")
+        logging.info(f"Importing staging table class")
         staging_table = _import_class(staging_table_class_path)
-        base = _import_class(base_class_path)
 
-        logging.info(f"Building SQLAlchemy engine and creating staging table if not exists")
+        logging.info(f"Building SQLAlchemy engine")
         engine = create_engine(database_uri)
-        base.metadata.create_all(engine, checkfirst=True)
         session_factory = sessionmaker(bind=engine)
 
         logging.info(f"Inserting {file_path} into staging table in parallel chunks")
