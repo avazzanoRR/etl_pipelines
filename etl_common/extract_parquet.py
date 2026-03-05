@@ -3,17 +3,17 @@ from pathlib import Path
 import pandas as pd
 
 
-def extract_parquet(raw_path: str, processing_dir: str, columns: list[str]) -> str:
+def extract_parquet(raw_path: str, output_dir: str, columns: list[str]) -> str:
     """
     Reads a parquet file, validates columns, and returns path to the processed file.
     
     Parameters:
     - raw_path: Path to the input parquet file.
-    - processing_dir: Directory to write the processed file.
+    - output_dir: Directory to write the processed file.
     - columns: List of expected columns in the parquet file.
     """
-    processing_dir = Path(processing_dir)
-    processing_dir.mkdir(parents=True, exist_ok=True)
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     try:
         logging.info(f"Reading parquet file: {raw_path}")
@@ -22,7 +22,7 @@ def extract_parquet(raw_path: str, processing_dir: str, columns: list[str]) -> s
         logging.info(f"Validating columns in {raw_path}")
         df = validate_and_filter_columns(df, columns)
 
-        staging_path = processing_dir / f"{Path(raw_path).stem}_extract.parquet"
+        staging_path = output_dir / f"{Path(raw_path).stem}_extract.parquet"
         df.to_parquet(staging_path, index=False)
         logging.info(f"Extract successful. Staged to: {staging_path}")
         return str(staging_path)

@@ -4,10 +4,10 @@ from pathlib import Path
 import pandas as pd
 
 
-def transform(file_path: str, processing_dir: str) -> str:
-    """Transforms a parquet file. Outputs to processing_dir."""
-    processing_dir = Path(processing_dir)
-    processing_dir.mkdir(parents=True, exist_ok=True)
+def transform(file_path: str, output_dir: str) -> str:
+    """Transforms a parquet file. Outputs to output_dir."""
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     try:
         df = pd.read_parquet(file_path)
@@ -25,7 +25,7 @@ def transform(file_path: str, processing_dir: str) -> str:
 
 
         stem = Path(file_path).stem.replace("_extract", "")
-        transformed_path = processing_dir / f"{stem}_transform.parquet"
+        transformed_path = output_dir / f"{stem}_transform.parquet"
         df.to_parquet(transformed_path, index=False)
 
         logging.info(f"Transform successful. Written to: {transformed_path}")
