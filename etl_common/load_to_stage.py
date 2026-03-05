@@ -15,19 +15,19 @@ def _import_class(dotted_path: str):
     return getattr(module, class_name)
 
 
-def load_to_stage(file_path: str, staging_table_class_path: str, database_uri: str, chunk_size: int = 10000, max_workers: int = 5) -> str:
+def load_to_stage(input_filepath: str, staging_table_class_path: str, database_uri: str, chunk_size: int = 10000, max_workers: int = 5) -> str:
     """
     Reads a validated parquet file and inserts into SQL Server staging table in parallel chunks.
     
     Parameters:
-    - file_path: Path to the validated parquet file to load.
+    - input_filepath: Path to the validated parquet file to load.
     - staging_table_class_path: Dotted path to the SQLAlchemy ORM class representing the staging table schema.
     - database_uri: Database connection URI for SQLAlchemy engine.
     - chunk_size: Number of rows per chunk for parallel insertion.
     - max_workers: Maximum number of parallel workers for insertion.
     """
     try:
-        df = pd.read_parquet(file_path)
+        df = pd.read_parquet(input_filepath)
 
         logging.info(f"Importing staging table class")
         staging_table = _import_class(staging_table_class_path)
@@ -36,13 +36,13 @@ def load_to_stage(file_path: str, staging_table_class_path: str, database_uri: s
         engine = create_engine(database_uri)
         session_factory = sessionmaker(bind=engine)
 
-        logging.info(f"Inserting {file_path} into staging table in parallel chunks")
+        logging.info(f"Inserting {input_filepath} into staging table in parallel chunks")
         chunks = split_dataframe(df, chunk_size)
         insert_in_chunks_parallel(session_factory, chunks, staging_table, max_workers=max_workers)
 
-        logging.info(f"Successfully loaded to stage: {file_path}")
-        return file_path
+        logging.info(f"Successfully loaded to stage: {input_filepath}")
+        return input_filepath
 
     except Exception as e:
-        logging.error(f"Load to stage failed for {file_path}: {e}")
+        logging.error(f"Load to stage failed for {input_filepath}: {e}")
         raise

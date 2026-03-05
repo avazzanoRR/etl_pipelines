@@ -3,12 +3,12 @@ from pathlib import Path
 import pandas as pd
 
 
-def extract_parquet(raw_path: str, output_dir: str, columns: list[str]) -> str:
+def extract_parquet(input_filepath: str, output_dir: str, columns: list[str]) -> str:
     """
     Reads a parquet file, validates columns, and returns path to the processed file.
     
     Parameters:
-    - raw_path: Path to the input parquet file.
+    - input_filepath: Path to the input parquet file.
     - output_dir: Directory to write the processed file.
     - columns: List of expected columns in the parquet file.
     """
@@ -16,19 +16,19 @@ def extract_parquet(raw_path: str, output_dir: str, columns: list[str]) -> str:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     try:
-        logging.info(f"Reading parquet file: {raw_path}")
-        df = safe_read_parquet(raw_path)
+        logging.info(f"Reading parquet file: {input_filepath}")
+        df = safe_read_parquet(input_filepath)
 
-        logging.info(f"Validating columns in {raw_path}")
+        logging.info(f"Validating columns in {input_filepath}")
         df = validate_and_filter_columns(df, columns)
 
-        staging_path = output_dir / f"{Path(raw_path).stem}_extract.parquet"
+        staging_path = output_dir / f"{Path(input_filepath).stem}_extract.parquet"
         df.to_parquet(staging_path, index=False)
         logging.info(f"Extract successful. Staged to: {staging_path}")
         return str(staging_path)
 
     except Exception as e:
-        logging.error(f"Extract failed for {raw_path}: {e}")
+        logging.error(f"Extract failed for {input_filepath}: {e}")
         raise
 
 

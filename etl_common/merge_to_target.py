@@ -13,13 +13,13 @@ def _import_class(dotted_path: str):
     return getattr(module, class_name)
 
 
-def merge_to_target(file_path: str, staging_table_class_path: str, target_table_class_path: str, database_uri: str, query_params: dict[str, Any]) -> str:
+def merge_to_target(input_filepath: str, staging_table_class_path: str, target_table_class_path: str, database_uri: str, query_params: dict[str, Any]) -> str:
     """
     Merges data from the staging table into the target table.
     Staging table is automatically truncated after a successful merge.
     
     Parameters:
-    - file_path: Path to the file being merged (used for logging and error handling).
+    - input_filepath: Path to the file being merged (used for logging and error handling).
     - staging_table_class_path: Dotted path to the SQLAlchemy ORM class representing the staging table schema.
     - target_table_class_path: Dotted path to the SQLAlchemy ORM class representing the target table schema.
     - database_uri: Database connection URI for SQLAlchemy engine.
@@ -40,5 +40,5 @@ def merge_to_target(file_path: str, staging_table_class_path: str, target_table_
         logging.info(f"Merge successful from {staging_table.__tablename__} to {target_table.__tablename__}")
 
     except Exception as e:
-        logging.error(f"Merge to target failed for {file_path}: {e}")
+        logging.error(f"Merge to target failed for {input_filepath}: {e}")
         raise
