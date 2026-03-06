@@ -3,10 +3,6 @@ from pathlib import Path
 import pandas as pd
 
 
-def _safe_divide(numerator, denominator):
-    return (numerator / denominator).replace([float('inf'), float('-inf')], None)
-
-
 def transform(input_filepath: str, output_dir: str) -> str:
     """Transforms a parquet file. Outputs to output_dir."""
     output_dir = Path(output_dir)
@@ -40,3 +36,7 @@ def transform(input_filepath: str, output_dir: str) -> str:
     except Exception as e:
         logging.error(f"Transform failed for {input_filepath}: {e}")
         raise
+
+
+def _safe_divide(numerator, denominator):
+    return (numerator / denominator).replace([float('inf'), float('-inf')], None)

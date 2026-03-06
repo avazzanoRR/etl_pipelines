@@ -7,20 +7,6 @@ from typing import Optional
 from rr_data_tools.transformations import convert_tz_string_to_datetime, format_unicode_characters
 
 
-def format_tags(col: pd.Series) -> pd.Series:
-    '''
-    Turn a stringified Python list into a comma-joined string.
-    Empty or missing lists become None.
-    '''
-    def _fmt(val: Optional[str]) -> Optional[str]:
-        if not val:
-            return None
-        items = ast.literal_eval(val)
-        return ', '.join(items) if items else None
-    return col.apply(_fmt)
-
-
-
 def transform(input_filepath: str, output_dir: str) -> str:
     """Transforms a parquet file. Outputs to output_dir."""
     output_dir = Path(output_dir)
@@ -48,7 +34,7 @@ def transform(input_filepath: str, output_dir: str) -> str:
 
         # Format the tags into a string instead of a list
         logging.info("Formatting tags in 'clip_tags'.")
-        df['clip_tags'] = format_tags(df['clip_tags'])
+        df['clip_tags'] = _format_tags(df['clip_tags'])
 
         # Cap the tags at 100 characters
         logging.info("Capping 'clip_tags' at 100 characters and converting it to string dtype.")
@@ -69,3 +55,16 @@ def transform(input_filepath: str, output_dir: str) -> str:
     except Exception as e:
         logging.error(f"Transform failed for {input_filepath}: {e}")
         raise
+
+
+def _format_tags(col: pd.Series) -> pd.Series:
+    '''
+    Turn a stringified Python list into a comma-joined string.
+    Empty or missing lists become None.
+    '''
+    def _fmt(val: Optional[str]) -> Optional[str]:
+        if not val:
+            return None
+        items = ast.literal_eval(val)
+        return ', '.join(items) if items else None
+    return col.apply(_fmt)

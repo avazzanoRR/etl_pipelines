@@ -3,32 +3,6 @@ from pathlib import Path
 import pandas as pd
 
 
-def _safe_divide(numerator, denominator):
-    return (numerator / denominator).replace([float('inf'), float('-inf')], None)
-
-
-def _split_page_path(col: pd.Series):
-    '''Split page path into three hierarchical levels.'''
-    parts = (
-        col
-        .fillna('')  # replace missing entries with empty strings
-        .str.strip('/')  # remove leading/trailing slashes
-        .str.split('/', expand=True)  # split each path by '/' into columns
-        .fillna('')  # ensure no NaN in any segment
-    )
-
-    # Ensure exactly three segments by adding empty columns if fewer exist
-    for i in range(3):
-        if i not in parts:
-            parts[i] = ''
-
-    # Format each segment with surrounding slashes (or empty if missing)
-    level1 = parts[0].map(lambda x: f'/{x}/' if x else '').astype("string")
-    level2 = parts[1].map(lambda x: f'/{x}/' if x else '').astype("string")
-    level3 = parts[2].map(lambda x: f'/{x}/' if x else '').astype("string")
-    return level1, level2, level3
-
-
 def transform(input_filepath: str, output_dir: str) -> str:
     """Transforms a parquet file. Outputs to output_dir."""
     output_dir = Path(output_dir)
@@ -76,3 +50,29 @@ def transform(input_filepath: str, output_dir: str) -> str:
     except Exception as e:
         logging.error(f"Transform failed for {input_filepath}: {e}")
         raise
+
+
+def _safe_divide(numerator, denominator):
+    return (numerator / denominator).replace([float('inf'), float('-inf')], None)
+
+
+def _split_page_path(col: pd.Series):
+    '''Split page path into three hierarchical levels.'''
+    parts = (
+        col
+        .fillna('')  # replace missing entries with empty strings
+        .str.strip('/')  # remove leading/trailing slashes
+        .str.split('/', expand=True)  # split each path by '/' into columns
+        .fillna('')  # ensure no NaN in any segment
+    )
+
+    # Ensure exactly three segments by adding empty columns if fewer exist
+    for i in range(3):
+        if i not in parts:
+            parts[i] = ''
+
+    # Format each segment with surrounding slashes (or empty if missing)
+    level1 = parts[0].map(lambda x: f'/{x}/' if x else '').astype("string")
+    level2 = parts[1].map(lambda x: f'/{x}/' if x else '').astype("string")
+    level3 = parts[2].map(lambda x: f'/{x}/' if x else '').astype("string")
+    return level1, level2, level3
