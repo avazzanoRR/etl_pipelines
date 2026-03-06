@@ -1,9 +1,24 @@
+import ast
 import logging
 from pathlib import Path
 import pandas as pd
+from typing import Optional
 
 from rr_data_tools.transformations import convert_tz_string_to_datetime, format_unicode_characters
-from etl.utils.transformation_utils import format_tags
+
+
+def format_tags(col: pd.Series) -> pd.Series:
+    '''
+    Turn a stringified Python list into a comma-joined string.
+    Empty or missing lists become None.
+    '''
+    def _fmt(val: Optional[str]) -> Optional[str]:
+        if not val:
+            return None
+        items = ast.literal_eval(val)
+        return ', '.join(items) if items else None
+    return col.apply(_fmt)
+
 
 
 def transform(input_filepath: str, output_dir: str) -> str:
