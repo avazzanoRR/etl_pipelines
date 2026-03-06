@@ -4,6 +4,7 @@ from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 
+
 class RptStandardReportCountry(Base):
     __tablename__ = "RptStandardReportCountry"
     __table_args__ = {"schema":"GoogleAnalytics.dbo"}

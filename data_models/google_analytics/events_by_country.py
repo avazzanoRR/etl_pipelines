@@ -4,6 +4,7 @@ from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 
+
 class RptEventsByCountry(Base):
     __tablename__ = "RptEventsByCountry"
     __table_args__ = {"schema":"GoogleAnalytics.dbo"}
