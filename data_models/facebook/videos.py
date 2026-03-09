@@ -5,8 +5,8 @@ from sqlalchemy.orm import declarative_base
 Base = declarative_base()
 
 
-class RptFacebookVideos(Base):
-    __tablename__ = 'RptFacebookVideos'
+class RptVideos(Base):
+    __tablename__ = 'RptVideos'
     __table_args__ = {'schema': 'VideoStats.dbo'}
                                    
     id = Column(Integer,Identity(start=1, increment=1), primary_key=True)
@@ -41,8 +41,8 @@ class RptFacebookVideos(Base):
 
 
 
-class StageRptFacebookVideos(Base):
-    __tablename__ = 'StageRptFacebookVideos'
+class StageRptVideos(Base):
+    __tablename__ = 'StageRptVideos'
     __table_args__ = {'schema': 'VideoStats.dbo'}
                                    
     id = Column(Integer, primary_key=True)

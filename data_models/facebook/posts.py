@@ -5,8 +5,8 @@ from sqlalchemy.orm import declarative_base
 Base = declarative_base()
 
 
-class RptFacebookPosts(Base):
-    __tablename__ = 'RptFacebookPosts'
+class RptPosts(Base):
+    __tablename__ = 'RptPosts'
     __table_args__ = {'schema': 'VideoStats.dbo'}
 
     id = Column(Integer, Identity(start=1, increment=1), primary_key=True)
@@ -61,8 +61,8 @@ class RptFacebookPosts(Base):
     record_update_datetime = Column(DATETIME2, nullable=True)
 
 
-class StageRptFacebookPosts(Base):
-    __tablename__ = 'StageRptFacebookPosts'
+class StageRptPosts(Base):
+    __tablename__ = 'StageRptPosts'
     __table_args__ = {'schema': 'VideoStats.dbo'}
 
     id = Column(Integer, primary_key=True)

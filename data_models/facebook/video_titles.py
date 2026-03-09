@@ -5,8 +5,8 @@ from sqlalchemy.orm import declarative_base
 Base = declarative_base()
 
 
-class DimFacebookVideoTitles(Base):
-    __tablename__ = 'DimFacebookVideoTitles'
+class DimVideoTitles(Base):
+    __tablename__ = 'DimVideoTitles'
     __table_args__ = {'schema': 'VideoStats.dbo'}
                                    
     id = Column(Integer,Identity(start=1, increment=1), primary_key=True)
@@ -25,8 +25,8 @@ class DimFacebookVideoTitles(Base):
 
 
 
-class StageDimFacebookVideoTitles(Base):
-    __tablename__ = 'StageDimFacebookVideoTitles'
+class StageDimVideoTitles(Base):
+    __tablename__ = 'StageDimVideoTitles'
     __table_args__ = {'schema': 'VideoStats.dbo'}
                                    
     id = Column(Integer, primary_key=True)
